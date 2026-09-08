@@ -1,0 +1,758 @@
+<title>KuberoPay Merchant API</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #fbfcfe;
+    --surface: #ffffff;
+    --surface-2: #f3f5fb;
+    --ink: #101828;
+    --ink-2: #333e52;
+    --muted: #5b6675;
+    --line: #e6e9f2;
+    --line-strong: #d5dae8;
+    --accent: #2646e1;
+    --accent-ink: #1b34b0;
+    --accent-soft: #eaeeff;
+    --code-bg: #0e1424;
+    --code-ink: #e7ecf7;
+    --code-line: #1f2a44;
+    --ok: #0a7d4b;
+    --ok-soft: #e7f6ee;
+    --warn: #a25b02;
+    --warn-soft: #fbf1de;
+    --danger: #b42318;
+    --danger-soft: #fbeae8;
+    --get: #2646e1;
+    --get-soft: #eaeeff;
+    --post: #0a7d4b;
+    --post-soft: #e7f6ee;
+    --del: #b42318;
+    --del-soft: #fbeae8;
+    --radius: 12px;
+    --maxw: 760px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a0e18;
+      --surface: #111726;
+      --surface-2: #0d1320;
+      --ink: #e9edf6;
+      --ink-2: #c2cadb;
+      --muted: #93a0b6;
+      --line: #1d2740;
+      --line-strong: #273353;
+      --accent: #7d95ff;
+      --accent-ink: #a9baff;
+      --accent-soft: #17213c;
+      --code-bg: #080c16;
+      --code-ink: #e7ecf7;
+      --code-line: #1a2440;
+      --ok: #34d399;
+      --ok-soft: #0f2a20;
+      --warn: #fbbf5a;
+      --warn-soft: #2a2210;
+      --danger: #f79489;
+      --danger-soft: #2c1613;
+      --get: #7d95ff;
+      --get-soft: #17213c;
+      --post: #34d399;
+      --post-soft: #0f2a20;
+      --del: #f79489;
+      --del-soft: #2c1613;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a0e18;
+    --surface: #111726;
+    --surface-2: #0d1320;
+    --ink: #e9edf6;
+    --ink-2: #c2cadb;
+    --muted: #93a0b6;
+    --line: #1d2740;
+    --line-strong: #273353;
+    --accent: #7d95ff;
+    --accent-ink: #a9baff;
+    --accent-soft: #17213c;
+    --code-bg: #080c16;
+    --code-ink: #e7ecf7;
+    --code-line: #1a2440;
+    --ok: #34d399;
+    --ok-soft: #0f2a20;
+    --warn: #fbbf5a;
+    --warn-soft: #2a2210;
+    --danger: #f79489;
+    --danger-soft: #2c1613;
+    --get: #7d95ff;
+    --get-soft: #17213c;
+    --post: #34d399;
+    --post-soft: #0f2a20;
+    --del: #f79489;
+    --del-soft: #2c1613;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    font-size: 15.5px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+
+  .layout { display: grid; grid-template-columns: 264px minmax(0, 1fr); gap: 0; max-width: 1180px; margin: 0 auto; }
+
+  /* Sidebar */
+  aside {
+    position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+    border-right: 1px solid var(--line); padding: 26px 20px 40px; background: var(--surface-2);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .brand .mark { width: 26px; height: 26px; border-radius: 7px; background: var(--accent); display: grid; place-items: center; color: #fff; font-family: "Sora", sans-serif; font-weight: 700; font-size: 15px; flex: none; }
+  .brand .name { font-family: "Sora", sans-serif; font-weight: 600; font-size: 15px; letter-spacing: -0.01em; }
+  .brand .name span { color: var(--muted); font-weight: 500; }
+  .ver { font-size: 11.5px; color: var(--muted); margin: 2px 0 22px 36px; font-variant-numeric: tabular-nums; }
+  nav .group { font-family: "Sora", sans-serif; font-size: 10.5px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 20px 0 8px 8px; }
+  nav a { display: block; padding: 5px 10px; border-radius: 7px; color: var(--ink-2); text-decoration: none; font-size: 13.7px; }
+  nav a:hover { background: var(--accent-soft); color: var(--accent-ink); }
+  nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  /* Main */
+  main { padding: 40px clamp(20px, 5vw, 64px) 96px; max-width: calc(var(--maxw) + 128px); }
+  .hero { border-bottom: 1px solid var(--line); padding-bottom: 30px; margin-bottom: 8px; }
+  .kicker { font-family: "Sora", sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+  h1 { font-family: "Sora", sans-serif; font-weight: 700; font-size: clamp(30px, 4.4vw, 40px); line-height: 1.08; letter-spacing: -0.025em; margin: 12px 0 14px; text-wrap: balance; }
+  .lede { font-size: 17px; color: var(--muted); max-width: 60ch; margin: 0; }
+  .baseurl { display: inline-flex; align-items: center; gap: 10px; margin-top: 22px; padding: 9px 8px 9px 14px; border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); font-family: "IBM Plex Mono", monospace; font-size: 13px; }
+  .baseurl b { color: var(--muted); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; font-family: "Sora", sans-serif; font-size: 10px; }
+  .baseurl code { color: var(--ink); }
+  .baseurl .pill { background: var(--accent); color: #fff; border-radius: 999px; padding: 3px 10px; font-family: "Sora", sans-serif; font-size: 11px; font-weight: 600; }
+  .baseurl .pill.test { background: var(--warn); }
+  .envs { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+  .envs .baseurl { margin-top: 0; }
+
+  section { padding-top: 46px; }
+  h2 { font-family: "Sora", sans-serif; font-weight: 600; font-size: 24px; letter-spacing: -0.02em; margin: 0 0 6px; scroll-margin-top: 24px; }
+  h3 { font-family: "Sora", sans-serif; font-weight: 600; font-size: 16.5px; letter-spacing: -0.01em; margin: 30px 0 8px; }
+  p { max-width: 65ch; }
+  a.inline { color: var(--accent-ink); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+  a.inline:hover { border-color: var(--accent); }
+  .section-note { color: var(--muted); max-width: 62ch; margin-top: 2px; }
+
+  /* Steps */
+  .steps { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); margin: 22px 0 4px; }
+  .step { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 16px 18px; background: var(--surface); }
+  .step .n { font-family: "IBM Plex Mono", monospace; font-size: 12px; color: var(--accent); font-weight: 600; }
+  .step h4 { font-family: "Sora", sans-serif; font-size: 14.5px; margin: 8px 0 4px; font-weight: 600; }
+  .step p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+  /* Endpoint header */
+  .endpoint { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 26px 0 6px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+  .method { font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 11.5px; letter-spacing: 0.05em; padding: 4px 9px; border-radius: 6px; }
+  .m-get { color: var(--get); background: var(--get-soft); }
+  .m-post { color: var(--post); background: var(--post-soft); }
+  .m-del { color: var(--del); background: var(--del-soft); }
+  .endpoint .path { font-family: "IBM Plex Mono", monospace; font-size: 14px; color: var(--ink); }
+  .endpoint .scope { margin-left: auto; font-size: 11px; color: var(--muted); font-family: "Sora", sans-serif; }
+  .endpoint .scope code { background: var(--surface-2); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; font-family: "IBM Plex Mono", monospace; color: var(--ink-2); }
+
+  /* Code */
+  figure.code { margin: 16px 0; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--code-line); background: var(--code-bg); }
+  figure.code figcaption { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px 8px 14px; border-bottom: 1px solid var(--code-line); color: #9aa7c4; font-family: "Sora", sans-serif; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .copy { border: 1px solid var(--code-line); background: transparent; color: #b7c2dc; border-radius: 6px; padding: 3px 9px; font-family: "Sora", sans-serif; font-size: 11px; cursor: pointer; }
+  .copy:hover { color: #fff; border-color: #38507f; }
+  .copy:focus-visible { outline: 2px solid var(--accent); }
+  figure.code pre { margin: 0; padding: 15px 16px; overflow-x: auto; }
+  figure.code code { font-family: "IBM Plex Mono", monospace; font-size: 12.8px; line-height: 1.7; color: var(--code-ink); white-space: pre; }
+  .tok-key { color: #8fb6ff; }
+  .tok-str { color: #7ee0b4; }
+  .tok-num { color: #f0b866; }
+  .tok-punct { color: #8592ad; }
+  .tok-comment { color: #667394; }
+  .tok-method { color: #f0b866; font-weight: 600; }
+
+  /* Inline code */
+  code.ic { font-family: "IBM Plex Mono", monospace; font-size: 0.86em; background: var(--surface-2); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--accent-ink); }
+
+  /* Tables */
+  .tablewrap { overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.6px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-family: "Sora", sans-serif; font-size: 11px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); }
+  tbody tr:last-child td { border-bottom: none; }
+  td code, th code { font-family: "IBM Plex Mono", monospace; font-size: 12.4px; color: var(--ink-2); }
+  td .req { color: var(--danger); font-size: 11px; font-family: "Sora", sans-serif; }
+  .status { display: inline-block; font-family: "IBM Plex Mono", monospace; font-size: 12px; padding: 2px 8px; border-radius: 999px; }
+  .s-ok { color: var(--ok); background: var(--ok-soft); }
+  .s-warn { color: var(--warn); background: var(--warn-soft); }
+  .s-bad { color: var(--danger); background: var(--danger-soft); }
+  .s-neutral { color: var(--muted); background: var(--surface-2); }
+
+  /* Callout */
+  .callout { display: flex; gap: 12px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; padding: 14px 16px; margin: 18px 0; background: var(--surface); }
+  .callout.warn { border-left-color: var(--warn); }
+  .callout .ico { font-family: "Sora", sans-serif; font-weight: 700; color: var(--accent); flex: none; }
+  .callout.warn .ico { color: var(--warn); }
+  .callout p { margin: 0; font-size: 13.8px; max-width: none; }
+  .callout strong { color: var(--ink); }
+
+  /* Console mockup */
+  .shot { border: 1px solid var(--line-strong); border-radius: 14px; overflow: hidden; margin: 20px 0 8px; background: var(--surface); box-shadow: 0 12px 40px -24px rgba(16,24,40,0.5); }
+  .shot .cap { font-size: 12.5px; color: var(--muted); padding: 10px 16px 0; }
+  figcaption.shotcap { font-size: 12.5px; color: var(--muted); margin-top: 8px; text-align: center; }
+
+  footer { margin-top: 70px; padding-top: 26px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  footer a { color: var(--accent-ink); text-decoration: none; }
+
+  .themetoggle { position: fixed; top: 16px; right: 18px; z-index: 20; border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2); border-radius: 999px; width: 38px; height: 38px; cursor: pointer; font-size: 15px; display: grid; place-items: center; }
+  .themetoggle:focus-visible { outline: 2px solid var(--accent); }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    aside { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+    nav { columns: 2; }
+    .steps { grid-template-columns: 1fr; }
+    main { padding: 28px 20px 72px; }
+  }
+</style>
+
+<button class="themetoggle" id="themeBtn" aria-label="Toggle light or dark theme" title="Toggle theme">◐</button>
+
+<div class="layout">
+  <aside>
+    <div class="brand">
+      <div class="mark">K</div>
+      <div class="name">KuberoPay <span>/ API</span></div>
+    </div>
+    <div class="ver">Merchant integration guide &middot; v3</div>
+    <nav>
+      <div class="group">Start here</div>
+      <a href="#overview">Overview</a>
+      <a href="#apikey">Create your API key</a>
+      <a href="#auth">Authentication</a>
+      <div class="group">Accept a payment</div>
+      <a href="#create-link">Create a payment link</a>
+      <a href="#status">Check payment status</a>
+      <a href="#list">List payments</a>
+      <a href="#refunds">Refund a payment</a>
+      <div class="group">Stay in sync</div>
+      <a href="#webhooks">Webhooks</a>
+      <a href="#reference">Status reference</a>
+      <div class="group">Reference</div>
+      <a href="#testlive">Test vs Live</a>
+      <a href="#errors">Errors</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Merchant API</div>
+      <h1>Accept payments with the KuberoPay API</h1>
+      <p class="lede">A merchant-facing guide to taking a payment end to end: create an API key, generate a payment link, check its status, and receive webhooks. Everything you need to wire KuberoPay into your own checkout.</p>
+      <div class="envs">
+        <div class="baseurl">
+          <b>Production</b>
+          <code>https://api.kuberopay.com/api/v1</code>
+          <span class="pill">live</span>
+        </div>
+        <div class="baseurl">
+          <b>UAT / sandbox</b>
+          <code>https://uatapi.kuberopay.com/api/v1</code>
+          <span class="pill test">test</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p class="section-note">Three calls take you from nothing to a paid order. Create a payment link, hand the returned checkout URL to your customer, and confirm the outcome by webhook or by polling the link.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="n">01</div>
+          <h4>Create an API key</h4>
+          <p>Issue a secret key in the console, once, under Developers.</p>
+        </div>
+        <div class="step">
+          <div class="n">02</div>
+          <h4>Create a payment link</h4>
+          <p>POST the amount and customer. Get back a hosted checkout URL.</p>
+        </div>
+        <div class="step">
+          <div class="n">03</div>
+          <h4>Confirm the result</h4>
+          <p>Receive a signed webhook, or poll the link for its status.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="apikey">
+      <h2>Create your API key</h2>
+      <p class="section-note">API keys are issued from the KuberoPay merchant console, not from the API itself. You need a team member with the <strong>Merchant admin</strong> role.</p>
+
+      <figure class="shot">
+        <svg viewBox="0 0 920 470" width="100%" role="img" aria-label="The KuberoPay console API keys screen, under Developers. An Issue key button sits top right, and a newly issued secret key is shown once in a copy dialog.">
+          <defs>
+            <style>
+              .win { fill: var(--surface); }
+              .side { fill: var(--surface-2); }
+              .ln { stroke: var(--line); stroke-width: 1; }
+              .tx { font-family: "Hanken Grotesk", sans-serif; }
+              .hd { font-family: "Sora", sans-serif; }
+              .mono { font-family: "IBM Plex Mono", monospace; }
+              .muted { fill: var(--muted); }
+              .ink { fill: var(--ink); }
+              .accent { fill: var(--accent); }
+            </style>
+          </defs>
+          <rect x="0.5" y="0.5" width="919" height="469" rx="13" class="win ln"/>
+          <!-- title bar -->
+          <rect x="1" y="1" width="918" height="34" rx="13" class="side"/>
+          <rect x="1" y="20" width="918" height="15" class="side"/>
+          <circle cx="20" cy="18" r="4.5" fill="#e5788a"/><circle cx="36" cy="18" r="4.5" fill="#e7c26b"/><circle cx="52" cy="18" r="4.5" fill="#79c98f"/>
+          <text x="72" y="22" class="mono" font-size="11" style="fill:var(--muted)">app.kuberopay.com/api/keys</text>
+          <line x1="1" y1="35" x2="919" y2="35" class="ln"/>
+          <!-- sidebar -->
+          <rect x="1" y="35" width="196" height="434" class="side"/>
+          <line x1="197" y1="35" x2="197" y2="469" class="ln"/>
+          <text x="22" y="70" class="hd" font-size="13" font-weight="600" style="fill:var(--ink)">KuberoPay</text>
+          <text x="22" y="104" class="hd" font-size="9.5" letter-spacing="1" style="fill:var(--muted)">DEVELOPERS</text>
+          <rect x="12" y="116" width="174" height="30" rx="7" style="fill:var(--accent-soft)"/>
+          <text x="24" y="135" class="tx" font-size="12.5" font-weight="600" style="fill:var(--accent-ink)">API keys</text>
+          <text x="24" y="170" class="tx" font-size="12.5" style="fill:var(--muted)">Webhooks</text>
+          <text x="24" y="198" class="tx" font-size="12.5" style="fill:var(--muted)">Events log</text>
+          <text x="22" y="240" class="hd" font-size="9.5" letter-spacing="1" style="fill:var(--muted)">SETTINGS</text>
+          <text x="24" y="266" class="tx" font-size="12.5" style="fill:var(--muted)">Business profile</text>
+          <text x="24" y="292" class="tx" font-size="12.5" style="fill:var(--muted)">Payouts</text>
+          <text x="24" y="318" class="tx" font-size="12.5" style="fill:var(--muted)">Team</text>
+          <!-- main -->
+          <text x="228" y="76" class="hd" font-size="10" letter-spacing="1.5" style="fill:var(--accent)">DEVELOPERS</text>
+          <text x="228" y="100" class="hd" font-size="22" font-weight="700" style="fill:var(--ink)">API keys</text>
+          <!-- issue button -->
+          <rect x="762" y="70" width="132" height="34" rx="8" class="accent"/>
+          <text x="828" y="92" class="tx" font-size="13" font-weight="600" text-anchor="middle" fill="#ffffff">+ Issue key</text>
+          <!-- callout arrow -->
+          <path d="M 720 60 C 745 52, 762 60, 780 68" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-dasharray="4 3"/>
+          <path d="M 780 68 l -9 -3 l 3 8 z" fill="var(--accent)"/>
+          <text x="610" y="52" class="tx" font-size="12" font-weight="600" style="fill:var(--accent-ink)">Start here</text>
+          <!-- table header -->
+          <line x1="228" y1="126" x2="894" y2="126" class="ln"/>
+          <text x="228" y="150" class="hd" font-size="10" letter-spacing="0.5" style="fill:var(--muted)">KEY</text>
+          <text x="560" y="150" class="hd" font-size="10" letter-spacing="0.5" style="fill:var(--muted)">MODE</text>
+          <text x="660" y="150" class="hd" font-size="10" letter-spacing="0.5" style="fill:var(--muted)">SCOPES</text>
+          <line x1="228" y1="162" x2="894" y2="162" class="ln"/>
+          <!-- row 1 -->
+          <text x="228" y="192" class="mono" font-size="12.5" style="fill:var(--ink)">sk_test_&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;4Q2f</text>
+          <rect x="560" y="180" width="46" height="18" rx="9" style="fill:var(--warn-soft)"/>
+          <text x="583" y="193" class="hd" font-size="10" font-weight="600" text-anchor="middle" style="fill:var(--warn)">Test</text>
+          <text x="660" y="192" class="mono" font-size="11" style="fill:var(--muted)">payment, refund</text>
+          <line x1="228" y1="212" x2="894" y2="212" class="ln"/>
+          <!-- copy-once dialog -->
+          <rect x="286" y="238" width="470" height="196" rx="12" class="win" style="stroke:var(--line-strong);stroke-width:1.4"/>
+          <text x="310" y="272" class="hd" font-size="14" font-weight="600" style="fill:var(--ink)">Your new secret key</text>
+          <text x="310" y="296" class="tx" font-size="11.5" style="fill:var(--muted)">Copy it now. For your security, it will not be shown again.</text>
+          <rect x="310" y="312" width="422" height="40" rx="8" style="fill:var(--surface-2);stroke:var(--line);stroke-width:1"/>
+          <text x="324" y="337" class="mono" font-size="12.5" style="fill:var(--ink)">sk_test_9Fh2&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;4Q2f</text>
+          <rect x="672" y="320" width="50" height="24" rx="6" class="accent"/>
+          <text x="697" y="336" class="tx" font-size="11" font-weight="600" text-anchor="middle" fill="#ffffff">Copy</text>
+          <rect x="310" y="368" width="120" height="34" rx="8" style="fill:var(--accent-soft)"/>
+          <text x="370" y="390" class="tx" font-size="12.5" font-weight="600" text-anchor="middle" style="fill:var(--accent-ink)">Done</text>
+        </svg>
+      </figure>
+      <figcaption class="shotcap">Console &rarr; Developers &rarr; API keys &rarr; Issue key. The secret is shown exactly once.</figcaption>
+
+      <h3>Steps</h3>
+      <div class="tablewrap">
+        <table>
+          <tbody>
+            <tr><td><code>1</code></td><td>Open the console for the environment you want, on the <strong>API keys</strong> page (menu: <strong>Developers &rarr; API keys</strong>):<br><span style="color:var(--muted)">Test:</span> <code class="ic">https://uatapp.kuberopay.com/api/keys</code><br><span style="color:var(--muted)">Live:</span> <code class="ic">https://app.kuberopay.com/api/keys</code></td></tr>
+            <tr><td><code>2</code></td><td>Select <strong>Issue key</strong>. You do not pick the mode - the UAT console mints <code class="ic">sk_test_</code> keys, the live console mints <code class="ic">sk_live_</code> keys.</td></tr>
+            <tr><td><code>3</code></td><td>Copy the secret from the dialog into your server-side secret manager. It is shown once and cannot be retrieved later.</td></tr>
+            <tr><td><code>4</code></td><td><strong>Yes, you create a key per environment.</strong> Make a test key in UAT while you build, then a separate live key in the live console before going live. Keys never carry between environments.</td></tr>
+            <tr><td><code>5</code></td><td>If a key is ever exposed, revoke it on the same screen and issue a new one.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout warn">
+        <span class="ico">!</span>
+        <p><strong>Keep secret keys server-side.</strong> A key starting <code class="ic">sk_</code> can move money. Never ship it in browser, mobile, or any client-side code, and never commit it to a repository.</p>
+      </div>
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <p class="section-note">Every request to <code class="ic">/api/v1</code> is authenticated with your secret key as a Bearer token over HTTPS.</p>
+
+      <figure class="code">
+        <figcaption>Authorization header<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-key">Authorization</span>: Bearer sk_test_9Fh2xxxxxxxxxxxxxxxx4Q2f</code></pre>
+      </figure>
+
+      <h3>Scopes</h3>
+      <p>A key carries scopes that limit what it can do. A newly issued key gets <code class="ic">payment:read</code>, <code class="ic">payment:write</code>, and <code class="ic">refund:write</code>. Payout scopes are granted separately.</p>
+
+      <h3>Idempotency</h3>
+      <p>Send an <code class="ic">Idempotency-Key</code> header on every money-moving <code class="ic">POST</code> (payment intents, refunds, payouts). Retrying the same key returns the original result instead of creating a duplicate, so a network timeout never charges twice.</p>
+
+      <h3>Request signing</h3>
+      <p>Money mutations - confirming an intent, creating a refund or a payout - must also be signed with an <code class="ic">X-KP-Signature</code> header so a leaked read of your traffic cannot be replayed. Read requests need only the Bearer key.</p>
+      <figure class="code">
+        <figcaption>X-KP-Signature (money mutations)<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-comment"># t is the current unix time in seconds; body is the exact raw JSON you send</span>
+<span class="tok-key">signature</span> = HMAC_SHA256(key = <span class="tok-str">"&lt;your secret key&gt;"</span>, message = <span class="tok-str">"{t}.{rawBody}"</span>)
+<span class="tok-key">X-KP-Signature</span>: t=1737331200,v1=&lt;hex&gt;</code></pre>
+      </figure>
+      <div class="callout">
+        <span class="ico">i</span>
+        <p>The signature is valid for <strong>5 minutes</strong>. This inbound scheme (you &rarr; KuberoPay, keyed with your API key) is different from the outbound webhook signature described under <a class="inline" href="#webhooks">Webhooks</a> (KuberoPay &rarr; you, keyed with a per-endpoint secret). Do not mix them up.</p>
+      </div>
+    </section>
+
+    <section id="create-link">
+      <h2>Create a payment link</h2>
+      <p class="section-note">A payment link is the simplest way to take a payment. Post the amount and the customer, and receive a hosted checkout URL you hand to the buyer. This is your order-creation call.</p>
+
+      <div class="endpoint">
+        <span class="method m-post">POST</span>
+        <span class="path">/payment_links</span>
+        <span class="scope">requires <code>payment:write</code></span>
+      </div>
+
+      <h3>Request body</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>amount</code> <span class="req">required</span></td><td>string</td><td>Decimal amount, e.g. <code>"499.00"</code>. Uses the currency's own scale.</td></tr>
+            <tr><td><code>currency</code> <span class="req">required</span></td><td>string</td><td>ISO code, e.g. <code>"INR"</code>, <code>"USD"</code>, <code>"EUR"</code>.</td></tr>
+            <tr><td><code>customer</code> <span class="req">required</span></td><td>object</td><td><code>{ name, email, phone }</code> - all three required.</td></tr>
+            <tr><td><code>description</code></td><td>string</td><td>Shown to the buyer on the checkout page.</td></tr>
+            <tr><td><code>reference_id</code></td><td>string</td><td>Your own order id. Echoed back and searchable.</td></tr>
+            <tr><td><code>expires_at</code></td><td>string</td><td>ISO time after which the link cannot be paid.</td></tr>
+            <tr><td><code>allowed_methods</code></td><td>string[]</td><td>Restrict methods, e.g. <code>["card","upi","crypto"]</code>. Omit to allow all enabled methods.</td></tr>
+            <tr><td><code>success</code></td><td>object</td><td><code>{ redirect_url, message }</code> - where to send the buyer after paying.</td></tr>
+            <tr><td><code>metadata</code></td><td>object</td><td>Any key/value pairs you want returned with the link.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure class="code">
+        <figcaption>cURL<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-method">curl</span> https://api.kuberopay.com/api/v1/payment_links \
+  -H <span class="tok-str">"Authorization: Bearer sk_test_9Fh2xxxxxxxx4Q2f"</span> \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d <span class="tok-str">'{
+    "amount": "499.00",
+    "currency": "INR",
+    "customer": { "name": "Asha Rao", "email": "asha@example.com", "phone": "+919800000000" },
+    "description": "Order #A-1042",
+    "reference_id": "A-1042",
+    "allowed_methods": ["card", "upi", "crypto"]
+  }'</span></code></pre>
+      </figure>
+
+      <h3>Response</h3>
+      <figure class="code">
+        <figcaption>201 Created<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-punct">{</span>
+  <span class="tok-key">"id"</span>: <span class="tok-str">"plink_01JBQ8N3K2Y7"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"object"</span>: <span class="tok-str">"payment_link"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"short_code"</span>: <span class="tok-str">"kp_7Yq3Za"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"url"</span>: <span class="tok-str">"https://checkout.kuberopay.com/?code=kp_7Yq3Za"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"amount"</span>: <span class="tok-str">"499.00"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"currency"</span>: <span class="tok-str">"INR"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"status"</span>: <span class="tok-str">"active"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"reference_id"</span>: <span class="tok-str">"A-1042"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"customer_email"</span>: <span class="tok-str">"asha@example.com"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"allowed_methods"</span>: <span class="tok-punct">[</span><span class="tok-str">"card"</span>, <span class="tok-str">"upi"</span>, <span class="tok-str">"crypto"</span><span class="tok-punct">],</span>
+  <span class="tok-key">"paid_at"</span>: <span class="tok-str">null</span><span class="tok-punct">,</span>
+  <span class="tok-key">"created_at"</span>: <span class="tok-str">"2026-01-20T10:00:00Z"</span>
+<span class="tok-punct">}</span></code></pre>
+      </figure>
+      <p>Send the buyer to <code class="ic">url</code>. KuberoPay hosts the checkout, presents the enabled methods (card, UPI, or crypto), and collects the payment.</p>
+    </section>
+
+    <section id="status">
+      <h2>Check payment status</h2>
+      <p class="section-note">Retrieve a link to see whether it has been paid. The response embeds the linked payment and its lifecycle status.</p>
+
+      <div class="endpoint">
+        <span class="method m-get">GET</span>
+        <span class="path">/payment_links/{id}</span>
+        <span class="scope">requires <code>payment:read</code></span>
+      </div>
+
+      <figure class="code">
+        <figcaption>200 OK<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-punct">{</span>
+  <span class="tok-key">"id"</span>: <span class="tok-str">"plink_01JBQ8N3K2Y7"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"status"</span>: <span class="tok-str">"paid"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"paid"</span>: <span class="tok-num">true</span><span class="tok-punct">,</span>
+  <span class="tok-key">"reference_id"</span>: <span class="tok-str">"A-1042"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"payment_intent"</span>: <span class="tok-punct">{</span>
+    <span class="tok-key">"id"</span>: <span class="tok-str">"pay_01JBQ8P0RA5T"</span><span class="tok-punct">,</span>
+    <span class="tok-key">"status"</span>: <span class="tok-str">"succeeded"</span><span class="tok-punct">,</span>
+    <span class="tok-key">"amount"</span>: <span class="tok-str">"499.00"</span>
+  <span class="tok-punct">},</span>
+  <span class="tok-key">"latest_payment_intent"</span>: <span class="tok-punct">{</span>
+    <span class="tok-key">"id"</span>: <span class="tok-str">"pay_01JBQ8P0RA5T"</span><span class="tok-punct">,</span>
+    <span class="tok-key">"status"</span>: <span class="tok-str">"succeeded"</span><span class="tok-punct">,</span>
+    <span class="tok-key">"payment_method"</span>: <span class="tok-str">"crypto"</span>
+  <span class="tok-punct">}</span>
+<span class="tok-punct">}</span></code></pre>
+      </figure>
+      <div class="callout">
+        <span class="ico">i</span>
+        <p>Polling is fine for low volume, but <a class="inline" href="#webhooks">webhooks</a> are the recommended way to learn the moment a payment succeeds - especially for crypto, where confirmation takes minutes.</p>
+      </div>
+    </section>
+
+    <section id="list">
+      <h2>List payments</h2>
+      <p class="section-note">Page through your links, filter by status or date, or search for one by id.</p>
+
+      <div class="endpoint">
+        <span class="method m-get">GET</span>
+        <span class="path">/payment_links</span>
+        <span class="scope">requires <code>payment:read</code></span>
+      </div>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Query</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td><code>page</code>, <code>pageSize</code></td><td>Pagination. The response returns <code>page</code>, <code>pageSize</code>, and <code>total</code>.</td></tr>
+            <tr><td><code>status</code></td><td>Comma-separated, e.g. <code>active,paid</code>.</td></tr>
+            <tr><td><code>currency</code></td><td>Filter to one currency.</td></tr>
+            <tr><td><code>created_from</code>, <code>created_to</code></td><td>ISO time range.</td></tr>
+            <tr><td><code>q</code></td><td>Search by id or reference.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure class="code">
+        <figcaption>GET with filters<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-method">curl</span> <span class="tok-str">"https://api.kuberopay.com/api/v1/payment_links?status=paid&amp;pageSize=20"</span> \
+  -H <span class="tok-str">"Authorization: Bearer sk_test_9Fh2xxxxxxxx4Q2f"</span></code></pre>
+      </figure>
+    </section>
+
+    <section id="refunds">
+      <h2>Refund a payment</h2>
+      <p class="section-note">Refund a captured payment in full or in part. A refund enters review and settles once approved, so its status starts at <code class="ic">pending</code>.</p>
+
+      <div class="endpoint">
+        <span class="method m-post">POST</span>
+        <span class="path">/refunds</span>
+        <span class="scope">requires <code>refund:write</code> &middot; signed &middot; idempotent</span>
+      </div>
+
+      <figure class="code">
+        <figcaption>cURL<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-method">curl</span> https://api.kuberopay.com/api/v1/refunds \
+  -H <span class="tok-str">"Authorization: Bearer sk_test_9Fh2xxxxxxxx4Q2f"</span> \
+  -H <span class="tok-str">"Idempotency-Key: A-1042-refund-1"</span> \
+  -H <span class="tok-str">"X-KP-Signature: t=1737331200,v1=&lt;hex&gt;"</span> \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d <span class="tok-str">'{
+    "payment_intent": "pay_01JBQ8P0RA5T",
+    "amount": "499.00",
+    "reason": "customer_request"
+  }'</span></code></pre>
+      </figure>
+      <figure class="code">
+        <figcaption>201 Created<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-punct">{</span>
+  <span class="tok-key">"id"</span>: <span class="tok-str">"re_01JBQ9T4M0"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"object"</span>: <span class="tok-str">"refund"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"status"</span>: <span class="tok-str">"pending"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"payment_intent_id"</span>: <span class="tok-str">"pay_01JBQ8P0RA5T"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"amount"</span>: <span class="tok-str">"499.00"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"currency"</span>: <span class="tok-str">"INR"</span>
+<span class="tok-punct">}</span></code></pre>
+      </figure>
+    </section>
+
+    <section id="webhooks">
+      <h2>Webhooks</h2>
+      <p class="section-note">A webhook is how KuberoPay tells your server the moment a payment changes - the reliable way to learn an outcome without polling. You register one endpoint URL per environment in the console; KuberoPay then POSTs a signed event to it on every payment change.</p>
+
+      <h3>Set it up (once per environment)</h3>
+      <div class="tablewrap">
+        <table>
+          <tbody>
+            <tr><td><code>1</code></td><td>Open <strong>Developers &rarr; Webhooks</strong> in the console:<br><span style="color:var(--muted)">Test:</span> <code class="ic">https://uatapp.kuberopay.com/api/webhooks</code><br><span style="color:var(--muted)">Live:</span> <code class="ic">https://app.kuberopay.com/api/webhooks</code></td></tr>
+            <tr><td><code>2</code></td><td>Select <strong>Add endpoint</strong> and enter your own HTTPS URL that will receive events, e.g. <code class="ic">https://yourshop.com/webhooks/kuberopay</code>.</td></tr>
+            <tr><td><code>3</code></td><td>Choose which events to receive, or keep the default set (it already includes the payment events). Save.</td></tr>
+            <tr><td><code>4</code></td><td>Copy the <strong>signing secret</strong> shown for the endpoint - you use it to verify every delivery (below). It is shown once; you can rotate it later from the same screen.</td></tr>
+            <tr><td><code>5</code></td><td>Use <strong>Send test event</strong> to fire a sample delivery and confirm your endpoint replies <code class="ic">2xx</code>.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>What a delivery looks like</h3>
+      <figure class="code">
+        <figcaption>POST to your endpoint<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-punct">{</span>
+  <span class="tok-key">"id"</span>: <span class="tok-str">"evt_01JBQ9V7C1"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"type"</span>: <span class="tok-str">"payment.succeeded"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"created_at"</span>: <span class="tok-str">"2026-01-20T10:03:11Z"</span><span class="tok-punct">,</span>
+  <span class="tok-key">"data"</span>: <span class="tok-punct">{</span> <span class="tok-key">"payment_id"</span>: <span class="tok-str">"pay_01JBQ8P0RA5T"</span>, <span class="tok-key">"amount"</span>: <span class="tok-str">"499.00"</span>, <span class="tok-key">"currency"</span>: <span class="tok-str">"INR"</span> <span class="tok-punct">}</span>
+<span class="tok-punct">}</span></code></pre>
+      </figure>
+
+      <h3>Verify the signature</h3>
+      <p>Each delivery carries <code class="ic">x-kp-signature</code> (a hex HMAC of the raw body, keyed with your endpoint's signing secret) and <code class="ic">x-kp-event-id</code> for de-duplication. Compute the same HMAC over the raw request body and compare in constant time before trusting the event. Delivery is at-least-once, so treat repeated <code class="ic">x-kp-event-id</code> values as one.</p>
+      <figure class="code">
+        <figcaption>Node.js verification<button class="copy" type="button">Copy</button></figcaption>
+        <pre><code><span class="tok-method">const</span> crypto = require(<span class="tok-str">"crypto"</span>);
+
+<span class="tok-comment">// rawBody must be the exact bytes received, not a re-serialized object</span>
+<span class="tok-method">function</span> <span class="tok-method">verify</span>(rawBody, headerSig, signingSecret) <span class="tok-punct">{</span>
+  <span class="tok-method">const</span> expected = crypto
+    .createHmac(<span class="tok-str">"sha256"</span>, signingSecret)
+    .update(rawBody)
+    .digest(<span class="tok-str">"hex"</span>);
+  <span class="tok-method">return</span> crypto.timingSafeEqual(
+    Buffer.from(expected), Buffer.from(headerSig)
+  );
+<span class="tok-punct">}</span></code></pre>
+      </figure>
+
+      <h3>Events you can subscribe to</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Group</th><th>Event types</th></tr></thead>
+          <tbody>
+            <tr><td>Payments</td><td><code>payment.succeeded</code>, <code>payment.processing</code>, <code>payment.requires_action</code>, <code>payment.requires_capture</code>, <code>payment.captured</code>, <code>payment.failed</code>, <code>payment.canceled</code></td></tr>
+            <tr><td>Crypto pay-in</td><td><code>crypto.payment.detected</code>, <code>crypto.payment.confirming</code>, <code>crypto.payment.completed</code>, <code>crypto.payment.underpaid</code>, <code>crypto.payment.expired</code></td></tr>
+            <tr><td>Refunds</td><td><code>refund.created</code>, <code>refund.succeeded</code>, <code>refund.failed</code>, <code>refund.canceled</code></td></tr>
+            <tr><td>Settlement</td><td><code>settlement.settled</code>, <code>settlement.failed</code>, <code>crypto_conversion.credited</code>, <code>rolling_reserve.released</code></td></tr>
+            <tr><td>Disputes</td><td><code>dispute.opened</code>, <code>dispute.under_review</code>, <code>dispute.won</code>, <code>dispute.lost</code></td></tr>
+            <tr><td>Account</td><td><code>merchant.approved</code>, <code>merchant.kyc.approved</code>, <code>merchant.kyc.rejected</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="reference">
+      <h2>Status reference</h2>
+      <p class="section-note">The exact status strings your integration will see.</p>
+
+      <h3>Payment (intent) status</h3>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="status s-neutral">created</span></td><td>Intent created, not yet confirmed.</td></tr>
+            <tr><td><span class="status s-warn">requires_action</span></td><td>Needs buyer action, e.g. 3-D Secure or a crypto deposit.</td></tr>
+            <tr><td><span class="status s-warn">processing</span></td><td>Submitted to the provider; awaiting the result.</td></tr>
+            <tr><td><span class="status s-warn">requires_capture</span></td><td>Authorized, awaiting a manual capture.</td></tr>
+            <tr><td><span class="status s-ok">succeeded</span></td><td>Paid. This is the terminal success state.</td></tr>
+            <tr><td><span class="status s-bad">failed</span></td><td>The payment did not go through.</td></tr>
+            <tr><td><span class="status s-neutral">canceled</span></td><td>Canceled before completion.</td></tr>
+            <tr><td><span class="status s-neutral">expired</span></td><td>The window elapsed before payment.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Refund status</h3>
+      <div class="tablewrap">
+        <table>
+          <tbody>
+            <tr><td><span class="status s-warn">pending</span></td><td>Created, in review.</td></tr>
+            <tr><td><span class="status s-warn">processing</span></td><td>Approved, being returned.</td></tr>
+            <tr><td><span class="status s-ok">succeeded</span></td><td>Funds returned to the buyer.</td></tr>
+            <tr><td><span class="status s-bad">failed</span></td><td>The refund could not be completed.</td></tr>
+            <tr><td><span class="status s-neutral">canceled</span></td><td>The refund request was canceled.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Crypto deposit status</h3>
+      <p>When a buyer pays with crypto, the payment moves through these on-chain states, surfaced via the <code class="ic">crypto.payment.*</code> webhooks.</p>
+      <div class="tablewrap">
+        <table>
+          <tbody>
+            <tr><td><span class="status s-neutral">awaiting</span></td><td>Deposit address issued; waiting for funds.</td></tr>
+            <tr><td><span class="status s-warn">detected</span></td><td>A transfer was seen on-chain.</td></tr>
+            <tr><td><span class="status s-warn">confirming</span></td><td>Accumulating confirmations.</td></tr>
+            <tr><td><span class="status s-ok">completed</span></td><td>Confirmed. The payment succeeds.</td></tr>
+            <tr><td><span class="status s-bad">underpaid</span></td><td>Window closed with less than the quoted amount.</td></tr>
+            <tr><td><span class="status s-bad">expired</span></td><td>No deposit within the window.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="testlive">
+      <h2>Test vs Live</h2>
+      <p class="section-note">KuberoPay runs two separate environments on two hosts. Build and test against <strong>UAT</strong> at <code class="ic">uatapi.kuberopay.com</code> with a <code class="ic">sk_test_</code> key (no real money, crypto on testnet), then move to <strong>Production</strong> at <code class="ic">api.kuberopay.com</code> with a <code class="ic">sk_live_</code> key for real transactions. Each environment issues its own keys, so a test key never reaches production.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th></th><th>UAT / sandbox</th><th>Production</th></tr></thead>
+          <tbody>
+            <tr><td>Base URL</td><td><code>https://uatapi.kuberopay.com/api/v1</code></td><td><code>https://api.kuberopay.com/api/v1</code></td></tr>
+            <tr><td>Key prefix</td><td><code>sk_test_&hellip;</code></td><td><code>sk_live_&hellip;</code></td></tr>
+            <tr><td>Money</td><td>No real funds; testnet for crypto</td><td>Real funds; mainnet for crypto</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <p class="section-note">Errors return a standard problem document with an HTTP status and a machine-readable code. Read the <code class="ic">code</code>, not the message text, when branching in your integration.</p>
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>HTTP</th><th>When</th><th>What to do</th></tr></thead>
+          <tbody>
+            <tr><td><span class="status s-bad">401</span></td><td>Missing, wrong, or wrong-mode key.</td><td>Check the Bearer key and that its mode matches your environment.</td></tr>
+            <tr><td><span class="status s-bad">403</span></td><td><code>merchant_not_approved</code>, or a scope the key lacks.</td><td>Complete onboarding, or issue a key with the needed scope.</td></tr>
+            <tr><td><span class="status s-warn">409</span></td><td>An <code>Idempotency-Key</code> was reused with a different body.</td><td>Use a fresh key for a new request.</td></tr>
+            <tr><td><span class="status s-warn">422</span></td><td>Validation failed on a field.</td><td>Fix the field named in the response and retry.</td></tr>
+            <tr><td><span class="status s-warn">429</span></td><td>Rate limited.</td><td>Back off and retry after the indicated window.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <span>KuberoPay Merchant API &middot; integration guide</span>
+      <span>Questions? Reach your KuberoPay contact or the developer console.</span>
+    </footer>
+  </main>
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById("themeBtn");
+    if (btn) {
+      btn.addEventListener("click", function () {
+        var root = document.documentElement;
+        var cur = root.getAttribute("data-theme");
+        var dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        root.setAttribute("data-theme", dark ? "light" : "dark");
+      });
+    }
+    document.querySelectorAll("button.copy").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var code = b.closest("figure").querySelector("code");
+        if (!code) return;
+        navigator.clipboard.writeText(code.innerText).then(function () {
+          var t = b.textContent; b.textContent = "Copied"; setTimeout(function () { b.textContent = t; }, 1400);
+        }).catch(function () {});
+      });
+    });
+  })();
+</script>
