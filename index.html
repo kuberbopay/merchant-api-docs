@@ -592,19 +592,23 @@
 
     <section id="webhooks">
       <h2>Webhooks</h2>
-      <p class="section-note">A webhook is how KuberoPay tells your server the moment a payment changes - the reliable way to learn an outcome without polling. You register one endpoint URL per environment in the console; KuberoPay then POSTs a signed event to it on every payment change.</p>
+      <p class="section-note">A webhook is how KuberoPay tells your server the moment one of your payment links changes status - paid, failed, expired, or refunded - so you never have to poll. After you sign in, your dashboard has its own <strong>Webhooks</strong> section: you add your own receiver URL there once per environment, and from then on KuberoPay POSTs a signed event to that URL every time a payment link changes state.</p>
 
       <h3>Set it up (once per environment)</h3>
       <div class="tablewrap">
         <table>
           <tbody>
-            <tr><td><code>1</code></td><td>Open <strong>Developers &rarr; Webhooks</strong> in the console:<br><span style="color:var(--muted)">Test:</span> <code class="ic">https://uatapp.kuberopay.com/api/webhooks</code><br><span style="color:var(--muted)">Live:</span> <code class="ic">https://app.kuberopay.com/api/webhooks</code></td></tr>
+            <tr><td><code>1</code></td><td><strong>Sign in to your KuberoPay dashboard</strong> and open <strong>Developers &rarr; Webhooks</strong>:<br><span style="color:var(--muted)">Test:</span> <code class="ic">https://uatapp.kuberopay.com/api/webhooks</code><br><span style="color:var(--muted)">Live:</span> <code class="ic">https://app.kuberopay.com/api/webhooks</code></td></tr>
             <tr><td><code>2</code></td><td>Select <strong>Add endpoint</strong> and enter your own HTTPS URL that will receive events, e.g. <code class="ic">https://yourshop.com/webhooks/kuberopay</code>.</td></tr>
             <tr><td><code>3</code></td><td>Choose which events to receive, or keep the default set (it already includes the payment events). Save.</td></tr>
             <tr><td><code>4</code></td><td>Copy the <strong>signing secret</strong> shown for the endpoint - you use it to verify every delivery (below). It is shown once; you can rotate it later from the same screen.</td></tr>
             <tr><td><code>5</code></td><td>Use <strong>Send test event</strong> to fire a sample delivery and confirm your endpoint replies <code class="ic">2xx</code>.</td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="callout">
+        <span class="ico">i</span>
+        <p>Once your endpoint is added, every payment link you create reports its outcome here. When a link is paid you receive <code class="ic">payment.succeeded</code>; if it does not go through you receive <code class="ic">payment.failed</code> or <code class="ic">payment.canceled</code>; crypto links also emit the <code class="ic">crypto.payment.*</code> stages. Each event's <code class="ic">data</code> carries the payment id and amount, and you match it back to your order by the <code class="ic">reference_id</code> you set when you created the link.</p>
       </div>
 
       <h3>What a delivery looks like</h3>

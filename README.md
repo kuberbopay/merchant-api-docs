@@ -205,9 +205,9 @@ curl https://api.kuberopay.com/api/v1/refunds \
 
 ## 7. Webhooks
 
-A webhook is how KuberoPay tells your server the moment a payment changes.
-It is the reliable way to learn an outcome without polling.
-You register one endpoint URL per environment in the console, and KuberoPay then POSTs a signed event to it on every payment change.
+A webhook is how KuberoPay tells your server the moment one of your payment links changes status - paid, failed, expired, or refunded - so you never have to poll.
+After you sign in, your dashboard has its own **Webhooks** section.
+You add your own receiver URL there once per environment, and from then on KuberoPay POSTs a signed event to that URL every time a payment link changes state.
 
 ### Set it up (once per environment)
 
@@ -218,7 +218,7 @@ UAT/sandbox: https://uatapp.kuberopay.com/api/webhooks
 Live:        https://app.kuberopay.com/api/webhooks
 ```
 
-1. Open **Developers -> Webhooks** in the console for the environment you want (the URL above).
+1. **Sign in to your KuberoPay dashboard** and open **Developers -> Webhooks** for the environment you want (the URL above).
 2. Select **Add endpoint** and enter your own HTTPS URL that will receive events, e.g. `https://yourshop.com/webhooks/kuberopay`.
 3. Choose which events to receive, or keep the default set (it already includes the payment events).
    Save.
@@ -226,6 +226,10 @@ Live:        https://app.kuberopay.com/api/webhooks
    You use it to verify every delivery (below).
    It is shown once; you can rotate it later from the same screen.
 5. Use **Send test event** to fire a sample delivery and confirm your endpoint replies `2xx`.
+
+Once your endpoint is added, every payment link you create reports its outcome here.
+When a link is paid you receive `payment.succeeded`; if it does not go through you receive `payment.failed` or `payment.canceled`; crypto links also emit the `crypto.payment.*` stages.
+Each event's `data` carries the payment id and amount, and you match it back to your order by the `reference_id` you set when you created the link.
 
 Event envelope:
 
